@@ -156,3 +156,7 @@ class UI(object):
             method(**kwargs)
         except:
             pass
+
+
+def visualize(df):
+    return UI(df)
