@@ -84,14 +84,14 @@ class UI(object):
         self.redraw()
 
     def get_plot_types(self):
-        graph_types = list(self.arg_widgets.keys())
-        graph_types.remove("*")
-        return graph_types
+        plot_types = list(self.arg_widgets.keys())
+        plot_types.remove("*")
+        return plot_types
 
     def get_available_args(self):
-        basic_options = list(self.arg_widgets["*"].keys())
-        plot_options = list(self.arg_widgets[self.plot_type_chooser.value].keys())
-        return basic_options + plot_options
+        args = list(self.arg_widgets["*"].keys())
+        plot_args = list(self.arg_widgets[self.plot_type_chooser.value].keys())
+        return plot_args + args
 
     def add_arg(self, *_):
         if self.arg_chooser.value not in self.args:
@@ -119,7 +119,7 @@ class UI(object):
         r.on_click(remove)
         return h
 
-    def update_content(self):
+    def update_controllers(self):
         self.args = [a for a in self.args[:] if (a in self.arg_widgets["*"]
                     or a in self.arg_widgets[self.plot_type_chooser.value])]
         lines = []
@@ -147,7 +147,7 @@ class UI(object):
         observer(None)
 
     def redraw(self, *_):
-        self.update_content()
+        self.update_controllers()
         self.connect_controls(self.plot)
 
     def plot(self, **kwargs):
