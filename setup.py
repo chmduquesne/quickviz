@@ -24,28 +24,35 @@ AUTHOR_EMAIL        = 'chmd@chmd.fr'
 URL                 = 'https://github.com/chmduquesne/quickviz'
 DOWNLOAD_URL        = 'https://github.com/chmduquesne/quickviz'
 LICENSE             = 'MIT'
+INSTALL_REQUIRES    = ['matplotlib', 'pandas', 'jupyter', 'ipywidgets']
 
 
-with open('requirements.txt') as f:
-    INSTALL_REQUIRES = [r for r in f.read().split('\n') if r != '']
-
-
-def version():
+def git_tag():
     tag = os.getenv('TRAVIS_TAG')
     if not tag:
         tag = subprocess.check_output(
                 'git describe --abbrev=0'.split(' ')
-                ).strip()
-    return tag.decode('utf-8')
+                ).strip().decode('utf-8')
+    return tag
+
+def pkg_version():
+    with open('quickviz/__init__.py') as f:
+        for line in f:
+            if line.startswith("__version__ ="):
+                exec(line)
+                return __version__
 
 
-VERSION = version()
-# update __version__ in __init__.py
-with open('quickviz/__init__.py') as f:
-    init_py = f.read()
-init_py = init_py.replace(str('GIT_TAG'), str(VERSION))
-with open('quickviz/__init__.py', 'w') as f:
-    f.write(init_py)
+if pkg_version() != 'GIT_TAG':
+    VERSION = pkg_version()
+else:
+    # update __version__ in __init__.py
+    with open('quickviz/__init__.py') as f:
+        init_py = f.read()
+    init_py = init_py.replace('GIT_TAG', git_tag())
+    with open('quickviz/__init__.py', 'w') as f:
+        f.write(init_py)
+    VERSION = pkg_version()
 
 
 setup(name=NAME,
