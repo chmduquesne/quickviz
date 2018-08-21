@@ -5,7 +5,7 @@ import ipywidgets as widgets
 from ipywidgets.widgets.interaction import show_inline_matplotlib_plots
 
 
-def panda_arg_widgets():
+def panda_arg_widgets(df):
     return {
         "*": {
             "x": widgets.Dropdown(options=list(df)),
@@ -70,7 +70,7 @@ def panda_arg_widgets():
 class UI(object):
     def __init__(self, df):
         self.df = df
-        self.arg_widgets = panda_arg_widgets()
+        self.arg_widgets = panda_arg_widgets(df)
 
         self.plot_type_chooser = widgets.Dropdown(options=self.get_plot_types(), description="Plot")
         self.plot_type_chooser.observe(self.redraw)
