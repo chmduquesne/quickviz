@@ -35,12 +35,12 @@ def git_tag():
                 ).strip().decode('utf-8')
     return tag
 
+
 def pkg_version():
     with open('quickviz/__init__.py') as f:
         for line in f:
-            if line.startswith("__version__ ="):
-                exec(line)
-                return __version__
+            if line.startswith("__version__ = "):
+                return line[len("__version__ = '"):-2]
 
 
 if pkg_version() != 'GIT_TAG':
