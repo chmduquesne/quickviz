@@ -1,3 +1,5 @@
+import subprocess
+import os
 try:
     from setuptools import setup
 except ImportError:
@@ -23,17 +25,28 @@ URL                 = 'https://github.com/chmduquesne/quickviz'
 DOWNLOAD_URL        = 'https://github.com/chmduquesne/quickviz'
 LICENSE             = 'MIT'
 
+
 with open('requirements.txt') as f:
     INSTALL_REQUIRES = [r for r in f.read().split('\n') if r != '']
 
-VERSION = None
+
+def version():
+    travis_tag = os.getenv("TRAVIS_TAG")
+    if travis_tag:
+        return travis_tag
+    else:
+        return subprocess.check_output(
+                "git describe --abbrev=0".split(" ")
+                ).strip()
+
+
+VERSION = version()
+# update __version__ in __init__.py
 with open('quickviz/__init__.py') as f:
-    for line in f:
-        if line.startswith('__version__ ='):
-            exec(line)
-            VERSION = __version__
-if VERSION is None:
-    raise RuntimeError('Unable to find version string')
+    init_py = f.read()
+init_py = init_py.replace('GIT_TAG', VERSION)
+with open('quickviz/__init__.py', 'w') as f:
+    f.write(init_py)
 
 
 setup(name=NAME,
