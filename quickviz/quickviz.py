@@ -82,7 +82,7 @@ class UI(object):
 
         self.vbox = widgets.VBox()
         self.vbox.children = [self.plot_type_chooser, self.add_arg_box]
-        self.args = []
+        self.connected_args = []
         self.output = widgets.Output()
         display(self.vbox, self.output)
         self.redraw()
@@ -90,7 +90,7 @@ class UI(object):
     def get_plot_types(self):
         return sorted([name for name in list(self.arg_widgets.keys()) if name != '*'])
 
-    def get_available_args(self):
+    def get_accepted_args(self):
         args  = [(a, a) for a in sorted(self.arg_widgets["*"].keys())]
         p = self.plot_type_chooser.value
         args += [('[%s] %s' % (p, a), a) for a in
@@ -104,8 +104,8 @@ class UI(object):
         return args
 
     def add_arg(self, *_):
-        if self.arg_chooser.value not in self.args:
-            self.args.append(self.arg_chooser.value)
+        if self.arg_chooser.value not in self.connected_args:
+            self.connected_args.append(self.arg_chooser.value)
             self.redraw()
 
     def get_widget(self, arg):
@@ -114,7 +114,7 @@ class UI(object):
         else:
             return self.arg_widgets[self.plot_type_chooser.value][arg]
 
-    def add_arg_controller(self, arg):
+    def arg_controller(self, arg):
         w = self.get_widget(arg)
         w.description = arg
         r = widgets.Button(description='remove')
@@ -124,26 +124,26 @@ class UI(object):
                 if c != w:
                     c.close()
             h.close()
-            self.args.remove(arg)
+            self.connected_args.remove(arg)
             self.redraw()
         r.on_click(remove)
         return h
 
     def update_controllers(self):
-        self.args = [a for a in self.args[:] if (a in self.arg_widgets["*"]
+        self.connected_args = [a for a in self.connected_args[:] if (a in self.arg_widgets["*"]
                     or a in self.arg_widgets[self.plot_type_chooser.value])]
         lines = []
         lines.append(self.add_arg_box)
         lines.append(widgets.HBox([widgets.Label(value="---")]))
-        for arg in self.args:
-            lines.append(self.add_arg_controller(arg))
+        for arg in self.connected_args:
+            lines.append(self.arg_controller(arg))
         lines.append(self.plot_type_chooser)
         self.vbox.children = lines
 
-        self.arg_chooser.options = self.get_available_args()
+        self.arg_chooser.options = self.get_accepted_args()
 
     def connect_controls(self, f):
-        controls = dict([(arg, self.get_widget(arg)) for arg in self.args])
+        controls = dict([(arg, self.get_widget(arg)) for arg in self.connected_args])
         def observer(change):
             kwargs = {k:v.value for k,v in controls.items()}
             show_inline_matplotlib_plots()
