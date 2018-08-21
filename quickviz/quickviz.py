@@ -4,68 +4,73 @@ from IPython.display import display, clear_output
 import ipywidgets as widgets
 from ipywidgets.widgets.interaction import show_inline_matplotlib_plots
 
+
+def panda_arg_widgets():
+    return {
+        "*": {
+            "x": widgets.Dropdown(options=list(df)),
+            "y": widgets.Dropdown(options=list(df)),
+            "subplots": widgets.Checkbox(),
+            "sharex": widgets.Checkbox(),
+            "sharey": widgets.Checkbox(),
+            "use_index": widgets.Checkbox(),
+            "title": widgets.Text(),
+            "grid": widgets.Checkbox(),
+            "legend": widgets.Checkbox(),
+            "logx": widgets.Checkbox(),
+            "logy": widgets.Checkbox(),
+            "fontsize": widgets.IntSlider(min=2, max=40),
+            "colormap": widgets.Text(),
+            "position": widgets.FloatSlider(min=0.0, max=1.0, step=0.05),
+            "xerr": widgets.Dropdown(options=dict([(col, list(df[col])) for col in list(df)])),
+            "yerr": widgets.Dropdown(options=dict([(col, list(df[col])) for col in list(df)])),
+            "stacked": widgets.Checkbox(),
+            "sort_columns": widgets.Checkbox(),
+            "mark_right": widgets.Checkbox(),
+        },
+        "area": {},
+        "bar": {},
+        "barh": {},
+        "box": {
+            "by": widgets.Dropdown(options=list(df)),
+        },
+        "density": {
+            "bw_method": widgets.Dropdown(options=["scott", "silverman"]),
+            "ind": widgets.IntText(value=1000),
+        },
+        "hexbin": {
+            "C": widgets.Dropdown(options=list(df)),
+            "gridsize": widgets.IntText(value=100),
+        },
+        "hist": {
+            "by": widgets.Dropdown(options=list(df)),
+            "bins": widgets.IntText(value=10),
+        },
+        "kde": {
+            "bw_method": widgets.Dropdown(options=["scott", "silverman"]),
+            "ind": widgets.IntText(value=1000),
+        },
+        "line": {},
+        "pie": {},
+        "scatter": {
+            "s": widgets.Dropdown(options=dict([(col, list(df[col])) for col in list(df)])),
+            "c": widgets.Dropdown(options=list(df)),
+        },
+        "boxplot": {
+            "by": widgets.Dropdown(options=list(df)),
+        },
+        "hist": {
+            "by": widgets.Dropdown(options=list(df)),
+            "bins": widgets.IntText(value=10),
+            "column": widgets.SelectMultiple(options=list(df)),
+        }
+    }
+
+
 class UI(object):
     def __init__(self, df):
         self.df = df
-        self.arg_widgets = {
-            "*": {
-                "x": widgets.Dropdown(options=list(df)),
-                "y": widgets.Dropdown(options=list(df)),
-                "subplots": widgets.Checkbox(),
-                "sharex": widgets.Checkbox(),
-                "sharey": widgets.Checkbox(),
-                "use_index": widgets.Checkbox(),
-                "title": widgets.Text(),
-                "grid": widgets.Checkbox(),
-                "legend": widgets.Checkbox(),
-                "logx": widgets.Checkbox(),
-                "logy": widgets.Checkbox(),
-                "fontsize": widgets.IntSlider(min=2, max=40),
-                "colormap": widgets.Text(),
-                "position": widgets.FloatSlider(min=0.0, max=1.0, step=0.05),
-                "xerr": widgets.Dropdown(options=dict([(col, list(df[col])) for col in list(df)])),
-                "yerr": widgets.Dropdown(options=dict([(col, list(df[col])) for col in list(df)])),
-                "stacked": widgets.Checkbox(),
-                "sort_columns": widgets.Checkbox(),
-                "mark_right": widgets.Checkbox(),
-            },
-            "area": {},
-            "bar": {},
-            "barh": {},
-            "box": {
-                "by": widgets.Dropdown(options=list(df)),
-            },
-            "density": {
-                "bw_method": widgets.Dropdown(options=["scott", "silverman"]),
-                "ind": widgets.IntText(value=1000),
-            },
-            "hexbin": {
-                "C": widgets.Dropdown(options=list(df)),
-                "gridsize": widgets.IntText(value=100),
-            },
-            "hist": {
-                "by": widgets.Dropdown(options=list(df)),
-                "bins": widgets.IntText(value=10),
-            },
-            "kde": {
-                "bw_method": widgets.Dropdown(options=["scott", "silverman"]),
-                "ind": widgets.IntText(value=1000),
-            },
-            "line": {},
-            "pie": {},
-            "scatter": {
-                "s": widgets.Dropdown(options=dict([(col, list(df[col])) for col in list(df)])),
-                "c": widgets.Dropdown(options=list(df)),
-            },
-            "boxplot": {
-                "by": widgets.Dropdown(options=list(df)),
-            },
-            "hist": {
-                "by": widgets.Dropdown(options=list(df)),
-                "bins": widgets.IntText(value=10),
-                "column": widgets.SelectMultiple(options=list(df)),
-            }
-        }
+        self.arg_widgets = panda_arg_widgets()
 
         self.plot_type_chooser = widgets.Dropdown(options=self.get_plot_types(), description="Plot")
         self.plot_type_chooser.observe(self.redraw)
@@ -84,9 +89,7 @@ class UI(object):
         self.redraw()
 
     def get_plot_types(self):
-        plot_types = list(self.arg_widgets.keys())
-        plot_types.remove("*")
-        return plot_types
+        return [name for name in list(self.arg_widgets.keys()) if name != '*']
 
     def get_available_args(self):
         args = list(self.arg_widgets["*"].keys())
@@ -123,12 +126,12 @@ class UI(object):
         self.args = [a for a in self.args[:] if (a in self.arg_widgets["*"]
                     or a in self.arg_widgets[self.plot_type_chooser.value])]
         lines = []
-        lines.append(self.plot_type_chooser)
+        lines.append(self.add_arg_box)
+        lines.append(widgets.HBox([widgets.Label(value="---")]))
         for arg in self.args:
             lines.append(self.add_arg_controller(arg))
-        lines.append(widgets.HBox([widgets.Label(value="---")]))
-        lines.append(self.add_arg_box)
         self.vbox.children = lines
+        lines.append(self.plot_type_chooser)
 
         self.arg_chooser.options = self.get_available_args()
 
