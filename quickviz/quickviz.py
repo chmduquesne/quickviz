@@ -77,9 +77,8 @@ class UI(object):
 
         self.add_arg_box = widgets.HBox()
         self.arg_chooser = widgets.Dropdown(description="Controls")
-        arg_button = widgets.Button(description="add")
-        arg_button.on_click(self.add_arg)
-        self.add_arg_box.children = [self.arg_chooser, arg_button]
+        self.arg_chooser.observe(self.add_arg)
+        self.add_arg_box.children = [self.arg_chooser]
 
         self.vbox = widgets.VBox()
         self.vbox.children = [self.plot_type_chooser, self.add_arg_box]
@@ -89,11 +88,11 @@ class UI(object):
         self.redraw()
 
     def get_plot_types(self):
-        return [name for name in list(self.arg_widgets.keys()) if name != '*']
+        return sorted([name for name in list(self.arg_widgets.keys()) if name != '*'])
 
     def get_available_args(self):
-        args = list(self.arg_widgets["*"].keys())
-        plot_args = list(self.arg_widgets[self.plot_type_chooser.value].keys())
+        args = sorted(self.arg_widgets["*"].keys())
+        plot_args = sorted(self.arg_widgets[self.plot_type_chooser.value].keys())
         return plot_args + args
 
     def add_arg(self, *_):
@@ -130,8 +129,8 @@ class UI(object):
         lines.append(widgets.HBox([widgets.Label(value="---")]))
         for arg in self.args:
             lines.append(self.add_arg_controller(arg))
-        self.vbox.children = lines
         lines.append(self.plot_type_chooser)
+        self.vbox.children = lines
 
         self.arg_chooser.options = self.get_available_args()
 
