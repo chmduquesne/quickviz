@@ -91,9 +91,10 @@ class UI(object):
         return sorted([name for name in list(self.arg_widgets.keys()) if name != '*'])
 
     def get_available_args(self):
-        args = sorted(self.arg_widgets["*"].keys())
-        plot_args = sorted(self.arg_widgets[self.plot_type_chooser.value].keys())
-        return plot_args + args
+        args = [('(*) %s' % a, a) for a in sorted(self.arg_widgets["*"].keys())]
+        plot = self.plot_type_chooser.value
+        args += [('(%s) %s' %(plot, a), a) for a in sorted(self.arg_widgets[self.plot_type_chooser.value].keys())]
+        return args
 
     def add_arg(self, *_):
         if self.arg_chooser.value not in self.args:
