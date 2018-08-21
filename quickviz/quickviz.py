@@ -130,8 +130,10 @@ class UI(object):
         return h
 
     def update_controllers(self):
-        self.connected_args = [a for a in self.connected_args[:] if (a in self.arg_widgets["*"]
-                    or a in self.arg_widgets[self.plot_type_chooser.value])]
+        self.connected_args = [
+            a for a in self.connected_args[:]
+            if a in dict(self.get_accepted_args()).values()
+        ]
         lines = []
         lines.append(self.add_arg_box)
         lines.append(widgets.HBox([widgets.Label(value="---")]))

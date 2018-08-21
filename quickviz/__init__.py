@@ -1,3 +1,3 @@
-__version__ = 'GIT_TAG'
+__version__ = '0.0.7'
 
 from .quickviz import visualize
