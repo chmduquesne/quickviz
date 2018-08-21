@@ -31,13 +31,12 @@ with open('requirements.txt') as f:
 
 
 def version():
-    travis_tag = os.getenv("TRAVIS_TAG")
-    if travis_tag:
-        return travis_tag
-    else:
-        return subprocess.check_output(
-                "git describe --abbrev=0".split(" ")
+    tag = os.getenv('TRAVIS_TAG')
+    if not tag:
+        tag = subprocess.check_output(
+                'git describe --abbrev=0'.split(' ')
                 ).strip()
+    return tag.decode('utf-8')
 
 
 VERSION = version()
