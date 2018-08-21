@@ -44,7 +44,7 @@ VERSION = version()
 # update __version__ in __init__.py
 with open('quickviz/__init__.py') as f:
     init_py = f.read()
-init_py = init_py.replace('GIT_TAG', VERSION)
+init_py = init_py.replace(str('GIT_TAG'), str(VERSION))
 with open('quickviz/__init__.py', 'w') as f:
     f.write(init_py)
 
