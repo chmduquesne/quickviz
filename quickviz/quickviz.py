@@ -71,13 +71,14 @@ class UI(object):
     def __init__(self, df):
         self.df = df
         self.arg_widgets = panda_arg_widgets(df)
+        self.connect_widgets()
 
         self.plot_type_chooser = widgets.Dropdown(options=self.get_plot_types(), description="Plot")
         self.plot_type_chooser.observe(self.redraw)
 
         self.add_arg_box = widgets.HBox()
         self.arg_chooser = widgets.Dropdown(description="Controls")
-        self.arg_chooser.observe(self.add_arg)
+        self.arg_chooser.observe(self.add_arg, 'value')
         self.add_arg_box.children = [self.arg_chooser]
 
         self.vbox = widgets.VBox()
@@ -86,6 +87,12 @@ class UI(object):
         self.output = widgets.Output()
         display(self.vbox, self.output)
         self.redraw()
+
+    def connect_widgets(self):
+        for widget_dict in self.arg_widgets.values():
+            for a, w in widget_dict.items():
+                w.description = a
+                w.observe(self.plot, 'value')
 
     def get_plot_types(self):
         return sorted([name for name in list(self.arg_widgets.keys()) if name != '*'])
@@ -129,11 +136,15 @@ class UI(object):
         r.on_click(remove)
         return h
 
-    def update_controllers(self):
+    def filter_connected_args(self):
         self.connected_args = [
             a for a in self.connected_args[:]
             if a in dict(self.get_accepted_args()).values()
         ]
+
+    def redraw(self, *_):
+        self.filter_connected_args()
+
         lines = []
         lines.append(self.add_arg_box)
         lines.append(widgets.HBox([widgets.Label(value="---")]))
@@ -144,31 +155,19 @@ class UI(object):
 
         self.arg_chooser.options = self.get_accepted_args()
 
-    def connect_controls(self, f):
-        controls = dict([(arg, self.get_widget(arg)) for arg in self.connected_args])
-        def observer(change):
-            kwargs = {k:v.value for k,v in controls.items()}
-            show_inline_matplotlib_plots()
-            with self.output:
-                clear_output(wait=True)
-                f(**kwargs)
-                show_inline_matplotlib_plots()
-        for k,w in controls.items():
-            w.observe(observer, 'value')
+    def plot(self, *_, **__):
+        method = getattr(self.df.plot, self.plot_type_chooser.value)
+        kwargs = {
+            arg:self.get_widget(arg).value for arg in self.connected_args
+        }
         show_inline_matplotlib_plots()
-        observer(None)
-
-    def redraw(self, *_):
-        self.update_controllers()
-        self.connect_controls(self.plot)
-
-    def plot(self, **kwargs):
-        method=getattr(self.df.plot, self.plot_type_chooser.value)
-        try:
-            method(**kwargs)
-        except:
-            pass
-
+        with self.output:
+            try:
+                clear_output(wait=True)
+                method(**kwargs)
+                show_inline_matplotlib_plots()
+            except:
+                pass
 
 def visualize(df):
     return UI(df)
