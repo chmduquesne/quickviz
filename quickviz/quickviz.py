@@ -204,6 +204,26 @@ def seaborn_arg_widgets(df):
             "whis":  widgets.FloatText(value=1.0),
             "notch": widgets.Checkbox(),
         }
+    violinplot = {
+            "x": relplot["x"],
+            "y": relplot["y"],
+            "hue": relplot["hue"],
+            #"order","hue_order"
+            "bw": widgets.Dropdown(options=["scott", "silverman"]),
+            "cut": widgets.FloatText(value=1.0),
+            "scale": widgets.Dropdown(options=["area", "count", "width"]),
+            "scale_hue": widgets.Checkbox(),
+            "gridsize": widgets.IntText(value=100),
+            "width": boxplot["width"],
+            "inner": widgets.Dropdown(options=["box", "quartile", "point", "stick"]),
+            "split": widgets.Checkbox(),
+            #"dodge"
+            "orient": catplot["orient"],
+            "linewidth": stripplot["linewidth"],
+            #"color"
+            "palette": relplot["palette"],
+            "saturation": boxplot["saturation"],
+        }
     return {
         "*": {},
         "relplot": relplot,
@@ -213,6 +233,7 @@ def seaborn_arg_widgets(df):
         "stripplot": stripplot,
         "swarmplot": swarmplot,
         "boxplot": boxplot,
+        "violinplot": violinplot,
     }
 
 
