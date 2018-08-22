@@ -135,7 +135,7 @@ def seaborn_arg_widgets(df):
             #"units": (non functional)
             #"estimator"
             #"ci"
-            #"n_boot":
+            "n_boot": widgets.IntText(value=10000),
             "sort": widgets.Checkbox(),
             "err_style": widgets.Dropdown(options=["band", "bars"]),
             "legend": relplot["legend"],
@@ -148,7 +148,7 @@ def seaborn_arg_widgets(df):
             "col_wrap": relplot["col_wrap"],
             #"estimator"
             #"ci"
-            #"n_boot"
+            "n_boot": lineplot["n_boot"],
             #"units"
             #"order","hue_order"
             #"row_order","col_order"
@@ -247,7 +247,7 @@ def seaborn_arg_widgets(df):
             #"order","hue_order"
             #"estimator"
             #"ci"
-            #"n_boot"
+            "n_boot": lineplot["n_boot"],
             #"units"
             "markers": scatterplot["markers"],
             #linestyles
@@ -267,7 +267,7 @@ def seaborn_arg_widgets(df):
             #"order","hue_order"
             #"estimator"
             #"ci"
-            #"n_boot"
+            "n_boot": lineplot["n_boot"],
             #"units"
             "orient": catplot["orient"],
             #"color"
@@ -289,6 +289,97 @@ def seaborn_arg_widgets(df):
             "saturation": boxplot["saturation"],
             #"dodge"
         }
+    jointplot = {
+            "x": relplot["x"],
+            "y": relplot["y"],
+            "kind": widgets.Dropdown(options=["scatter", "reg", "resid", "kde", "hex"]),
+            #stat_func
+            #color
+            "height": widgets.IntText(value=5),
+            "ratio": widgets.IntText(value=1),
+            "space": widgets.IntText(value=1),
+            "dropna": widgets.Checkbox(),
+            #"xlim"
+            #"ylim"
+        }
+    pairplot = {
+            "hue": relplot["hue"],
+            #hue_order
+            "palette": relplot["palette"],
+            #vars
+            #x_vars
+            #y_vars
+            "kind": widgets.Dropdown(options=["scatter", "reg"]),
+            "diag_kind": widgets.Dropdown(options=["auto", "hist", "kde"]),
+            "markers": scatterplot["markers"],
+            "height": widgets.FloatText(value=1.0),
+            "aspect": widgets.FloatText(value=1.0),
+            "dropna": jointplot["dropna"],
+        }
+    distplot = {
+            "a": widgets.Dropdown(options=[(col, list(df[col])) for col in list(df)]),
+            #"bins"
+            "hist": widgets.Checkbox(),
+            "kde": widgets.Checkbox(),
+            "rug": widgets.Checkbox(),
+            #"fit"
+            #{hist, kde, rug, fit}_kws
+            #"color"
+            "vertical": widgets.Checkbox(),
+            "norm_hist": widgets.Checkbox(),
+            "axlabel": widgets.Text(),
+            "label": widgets.Text(),
+        }
+    kdeplot = {
+            "data": widgets.Dropdown(options=[(col, list(df[col])) for col in list(df)]),
+            "data2": widgets.Dropdown(options=[(col, list(df[col])) for col in list(df)]),
+            "shade": widgets.Checkbox(),
+            "vertical": distplot["vertical"],
+            "kernel": widgets.Dropdown(options=['gau', 'cos', 'biw', 'epa', 'tri', 'triw']),
+            "bw": violinplot["bw"],
+            "gridsize": violinplot["gridsize"],
+            "cut": violinplot["cut"],
+            #"clip":
+            "legend": relplot["legend"],
+            "cumulative": widgets.Checkbox(),
+            "shade_lowest": widgets.Checkbox(),
+            "cbar": widgets.Checkbox(),
+            "cbar_ax": widgets.Checkbox(),
+        }
+    lmplot = {
+            "x": relplot["x"],
+            "y": relplot["y"],
+            "hue": relplot["hue"],
+            "col": relplot["col"],
+            "row": relplot["row"],
+            "palette": relplot["palette"],
+            "col_wrap": relplot["col_wrap"],
+            "height": widgets.FloatText(value=1.0),
+            "aspect": widgets.FloatText(value=1.0),
+            "markers": scatterplot["markers"],
+            "sharex": widgets.Dropdown(options={"True": True, "col": "col", "row": "row"}),
+            "sharey": widgets.Dropdown(options={"True": True, "col": "col", "row": "row"}),
+            "legend": relplot["legend"],
+            "legend_out": widgets.Checkbox(),
+            #x_estimator
+            "x_bins": widgets.IntText(value=10),
+            "x_ci": widgets.IntSlider(min=0, max=100, value=95),
+            "scatter": widgets.Checkbox(),
+            "fit_reg": widgets.Checkbox(),
+            "ci": widgets.IntSlider(min=0, max=100, value=95),
+            "n_boot": lineplot["n_boot"],
+            #units
+            "order": widgets.IntText(value=1),
+            "logistic": widgets.Checkbox(),
+            "lowess": widgets.Checkbox(),
+            "robust": widgets.Checkbox(),
+            "logx": widgets.Checkbox(),
+            "x_partial": widgets.Dropdown(options=list(df)),
+            "y_partial": widgets.Dropdown(options=list(df)),
+            "truncate": widgets.Checkbox(),
+            "x_jitter": widgets.FloatText(value=1.0),
+            "y_jitter": widgets.FloatText(value=1.0),
+        }
     return {
         "*": {},
         "relplot": relplot,
@@ -303,12 +394,19 @@ def seaborn_arg_widgets(df):
         "pointplot": pointplot,
         "barplot": barplot,
         "countplot": countplot,
+        "jointplot": jointplot,
+        "pairplot": pairplot,
+        "distplot": distplot,
+        "kdeplot": kdeplot,
+        #rugplot -> not interesting
+        "lmplot": lmplot,
     }
 
 
 def seaborn_plot(df, plot_type, kwargs):
     method = getattr(seaborn, plot_type)
-    kwargs["data"]=df
+    if plot_type not in ["distplot", "kdeplot"]:
+        kwargs["data"]=df
     method(**kwargs)
 
 
