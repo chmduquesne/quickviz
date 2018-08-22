@@ -5,7 +5,7 @@ import ipywidgets as widgets
 from ipywidgets.widgets.interaction import show_inline_matplotlib_plots
 
 
-def panda_arg_widgets(df):
+def pandas_arg_widgets(df):
     return {
         "*": {
             "x": widgets.Dropdown(options=list(df)),
@@ -68,9 +68,10 @@ def panda_arg_widgets(df):
 
 
 class UI(object):
-    def __init__(self, df):
+    def __init__(self, df, generate_widgets, plot_function):
         self.df = df
-        self.arg_widgets = panda_arg_widgets(df)
+        self.arg_widgets = generate_widgets(df)
+        self.plot_function = plot_function
         self.connected_args = []
         self.connect_widgets()
 
@@ -163,7 +164,6 @@ class UI(object):
 
 
     def plot(self, *_):
-        method = getattr(self.df.plot, self.plot_type_chooser.value)
         kwargs = {
             arg:self.get_widget(arg).value for arg in self.connected_args
         }
@@ -171,10 +171,23 @@ class UI(object):
         with self.output:
             try:
                 clear_output(wait=True)
-                method(**kwargs)
+                self.plot_function(
+                        self.df,
+                        self.plot_type_chooser.value,
+                        kwargs)
                 show_inline_matplotlib_plots()
             except:
                 pass
 
+
+def pandas_plot(df, plot_type, kwargs):
+    method = getattr(df.plot, plot_type)
+    method(**kwargs)
+
+
 def visualize(df):
-    return UI(df)
+    return UI(
+            df,
+            generate_widgets=pandas_arg_widgets,
+            plot_function=pandas_plot
+            )
