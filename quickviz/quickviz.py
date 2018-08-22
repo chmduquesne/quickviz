@@ -240,6 +240,26 @@ def seaborn_arg_widgets(df):
             "scale":  widgets.Dropdown(options=["linear", "exponential", "area"]),
             "outlier_prop": widgets.FloatSlider(min=0.0, max=1.0, step=0.001, value=0.007),
         }
+    pointplot = {
+            "x": relplot["x"],
+            "y": relplot["y"],
+            "hue": relplot["hue"],
+            #"order","hue_order"
+            #"estimator"
+            #"ci"
+            #"n_boot"
+            #"units"
+            "markers": scatterplot["markers"],
+            #linestyles
+            #"dodge"
+            "join": widgets.Checkbox(),
+            "scale": widgets.FloatText(value=1.0),
+            "orient": catplot["orient"],
+            #"color"
+            "palette": relplot["palette"],
+            "errwidth": widgets.FloatText(value=1.0),
+            "capsize": widgets.FloatText(value=1.0),
+        }
     return {
         "*": {},
         "relplot": relplot,
@@ -251,6 +271,7 @@ def seaborn_arg_widgets(df):
         "boxplot": boxplot,
         "violinplot": violinplot,
         "boxenplot": boxenplot,
+        "pointplot": pointplot,
     }
 
 
