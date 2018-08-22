@@ -260,6 +260,35 @@ def seaborn_arg_widgets(df):
             "errwidth": widgets.FloatText(value=1.0),
             "capsize": widgets.FloatText(value=1.0),
         }
+    barplot = {
+            "x": relplot["x"],
+            "y": relplot["y"],
+            "hue": relplot["hue"],
+            #"order","hue_order"
+            #"estimator"
+            #"ci"
+            #"n_boot"
+            #"units"
+            "orient": catplot["orient"],
+            #"color"
+            "palette": relplot["palette"],
+            "saturation": boxplot["saturation"],
+            #"errcolor"
+            "errwidth": pointplot["errwidth"],
+            "capsize": pointplot["capsize"],
+            #"dodge"
+        }
+    countplot = {
+            "x": relplot["x"],
+            "y": relplot["y"],
+            "hue": relplot["hue"],
+            #"order","hue_order"
+            "orient": catplot["orient"],
+            #"color"
+            "palette": relplot["palette"],
+            "saturation": boxplot["saturation"],
+            #"dodge"
+        }
     return {
         "*": {},
         "relplot": relplot,
@@ -272,6 +301,8 @@ def seaborn_arg_widgets(df):
         "violinplot": violinplot,
         "boxenplot": boxenplot,
         "pointplot": pointplot,
+        "barplot": barplot,
+        "countplot": countplot,
     }
 
 
@@ -384,15 +415,12 @@ class UI(object):
         }
         show_inline_matplotlib_plots()
         with self.output:
-            try:
-                clear_output(wait=True)
-                self.plot_function(
-                        self.df,
-                        self.plot_type_chooser.value,
-                        kwargs)
-                show_inline_matplotlib_plots()
-            except:
-                pass
+            clear_output(wait=True)
+            self.plot_function(
+                    self.df,
+                    self.plot_type_chooser.value,
+                    kwargs)
+            show_inline_matplotlib_plots()
 
 
 def visualize_pandas(df):
