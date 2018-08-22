@@ -71,10 +71,11 @@ class UI(object):
     def __init__(self, df):
         self.df = df
         self.arg_widgets = panda_arg_widgets(df)
+        self.connected_args = []
         self.connect_widgets()
 
         self.plot_type_chooser = widgets.Dropdown(options=self.get_plot_types(), description="Plot")
-        self.plot_type_chooser.observe(self.redraw)
+        self.plot_type_chooser.observe(self.redraw, 'value')
 
         self.add_arg_box = widgets.HBox()
         self.arg_chooser = widgets.Dropdown(description="Controls")
@@ -82,9 +83,8 @@ class UI(object):
         self.add_arg_box.children = [self.arg_chooser]
 
         self.vbox = widgets.VBox()
-        self.vbox.children = [self.plot_type_chooser, self.add_arg_box]
-        self.connected_args = []
         self.output = widgets.Output()
+
         display(self.vbox, self.output)
         self.redraw()
 
@@ -123,7 +123,6 @@ class UI(object):
 
     def arg_controller(self, arg):
         w = self.get_widget(arg)
-        w.description = arg
         r = widgets.Button(description='remove')
         h = widgets.HBox(children=[w, r])
         def remove(*_):
@@ -155,7 +154,7 @@ class UI(object):
 
         self.arg_chooser.options = self.get_accepted_args()
 
-    def plot(self, *_, **__):
+    def plot(self, *_):
         method = getattr(self.df.plot, self.plot_type_chooser.value)
         kwargs = {
             arg:self.get_widget(arg).value for arg in self.connected_args
