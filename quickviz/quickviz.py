@@ -79,7 +79,6 @@ class UI(object):
 
         self.add_arg_box = widgets.HBox()
         self.arg_chooser = widgets.Dropdown(description="Controls")
-        self.arg_chooser.observe(self.add_arg, 'value')
         self.add_arg_box.children = [self.arg_chooser]
 
         self.vbox = widgets.VBox()
@@ -152,7 +151,16 @@ class UI(object):
         lines.append(self.plot_type_chooser)
         self.vbox.children = lines
 
+        arg_choice = self.arg_chooser.value
+        try:
+            self.arg_chooser.unobserve(self.add_arg, 'value')
+        except ValueError:
+            pass
         self.arg_chooser.options = self.get_accepted_args()
+        if arg_choice in dict(self.get_accepted_args()).values():
+            self.arg_chooser.value = arg_choice
+        self.arg_chooser.observe(self.add_arg, 'value')
+
 
     def plot(self, *_):
         method = getattr(self.df.plot, self.plot_type_chooser.value)
