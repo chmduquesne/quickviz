@@ -140,11 +140,36 @@ def seaborn_arg_widgets(df):
             "err_style": widgets.Dropdown(options=["band", "bars"]),
             "legend": relplot["legend"],
         }
+    catplot = {
+            "x": relplot["x"],
+            "y": relplot["y"],
+            "row": relplot["row"],
+            "col": relplot["col"],
+            "col_wrap": relplot["col_wrap"],
+            #"estimator"
+            #"ci"
+            #"n_boot"
+            #"units"
+            #"order","hue_order"
+            #"row_order","col_order"
+            "kind": widgets.Dropdown(options=["point", "bar", "strip", "swarm", "box", "violin", "boxen"]),
+            #"height"
+            #"aspect"
+            "orient": widgets.Dropdown(options=["v", "h"]),
+            #"color"
+            "palette": relplot["palette"],
+            "legend": relplot["legend"],
+            "legend_out": widgets.Checkbox(),
+            "sharex": widgets.Dropdown(options={"True": True, "col": "col", "row": "row"}),
+            "sharey": widgets.Dropdown(options={"True": True, "col": "col", "row": "row"}),
+            "margin_titles": widgets.Checkbox(),
+        }
     return {
         "*": {},
         "relplot": relplot,
         "scatterplot": scatterplot,
         "lineplot": lineplot,
+        "catplot": catplot,
     }
 
 
@@ -267,7 +292,7 @@ class UI(object):
                 pass
 
 
-def visualize(df):
+def visualize_pandas(df):
     return UI(
             df,
             generate_widgets=pandas_arg_widgets,
@@ -281,3 +306,12 @@ def visualize_seaborn(df):
             generate_widgets=seaborn_arg_widgets,
             plot_function=seaborn_plot
             )
+
+
+def visualize(df, method='pandas'):
+    if method == "pandas":
+        return visualize_pandas(df)
+    elif method == "seaborn":
+        return visualize_seaborn(df)
+    else:
+        raise ValueError("unsupported method")
