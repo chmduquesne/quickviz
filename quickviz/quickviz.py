@@ -224,6 +224,22 @@ def seaborn_arg_widgets(df):
             "palette": relplot["palette"],
             "saturation": boxplot["saturation"],
         }
+    boxenplot = {
+            "x": relplot["x"],
+            "y": relplot["y"],
+            "hue": relplot["hue"],
+            #"order","hue_order"
+            "orient": catplot["orient"],
+            #"color"
+            "palette": relplot["palette"],
+            "saturation": boxplot["saturation"],
+            "width": boxplot["width"],
+            #"dodge"
+            "k_depth": widgets.Dropdown(options=["proportion", "tukey", "trustworthy"]),
+            "linewidth": stripplot["linewidth"],
+            "scale":  widgets.Dropdown(options=["linear", "exponential", "area"]),
+            "outlier_prop": widgets.FloatSlider(min=0.0, max=1.0, step=0.001, value=0.007),
+        }
     return {
         "*": {},
         "relplot": relplot,
@@ -234,6 +250,7 @@ def seaborn_arg_widgets(df):
         "swarmplot": swarmplot,
         "boxplot": boxplot,
         "violinplot": violinplot,
+        "boxenplot": boxenplot,
     }
 
 
