@@ -6,14 +6,14 @@ except ImportError:
     from distutils.core import setup
 
 LONG_DESCRIPTION = """
-This package provides widgets for quickly visualizing pandas dataframes
+Widgets for quickly visualizing pandas dataframes
 
-It is often necessary to plot data in order to understand it. It allows to
-quiclky spot glitches: that person who is 180 meters tall, this car which
-can speed thousands of kilometers per hour. In this situation, one needs a
-way to quickly (rather than beautifully) plot what is there. This package
-provides a set of widgets to do this very quickly in a few clicks. It
-targets speed and ease of use over completeness of the api.
+It is often necessary to plot data in order to understand it. Plotting
+allows to quiclky spot glitches in the data: that person who is 180 meters
+tall or this car which can speed thousands of kilometers per hour will
+immediately stand out. In this situation, one wants a way to quickly
+(rather than beautifully) plot their data. Quickviz provides a set of
+widgets to do this in a few clicks.
 """
 
 DESCRIPTION         = 'quickviz: interactive widgets for plotting pandas dataframes.'
