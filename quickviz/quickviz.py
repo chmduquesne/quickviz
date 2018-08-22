@@ -273,6 +273,7 @@ class UI(object):
         if arg_choice in dict(self.get_accepted_args()).values():
             self.arg_chooser.value = arg_choice
         self.arg_chooser.observe(self.add_arg, 'value')
+        self.plot()
 
 
     def plot(self, *_):
