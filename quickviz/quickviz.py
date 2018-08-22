@@ -177,6 +177,33 @@ def seaborn_arg_widgets(df):
             #"edgecolor"
             "linewidth": widgets.FloatText(value=1.0),
         }
+    swarmplot = {
+            "x": relplot["x"],
+            "y": relplot["y"],
+            #"order","hue_order"
+            #"dodge"
+            "orient": catplot["orient"],
+            #"color"
+            "palette": relplot["palette"],
+            "size": stripplot["size"],
+            #"edgecolor"
+            "linewidth": stripplot["linewidth"],
+        }
+    boxplot = {
+            "x": relplot["x"],
+            "y": relplot["y"],
+            #"order","hue_order"
+            "orient": catplot["orient"],
+            #"color"
+            "palette": relplot["palette"],
+            "saturation": widgets.FloatText(value=1.0),
+            "width": widgets.FloatText(value=1.0),
+            #"dodge"
+            "fliersize": widgets.FloatText(value=1.0),
+            "linewidth": stripplot["linewidth"],
+            "whis":  widgets.FloatText(value=1.0),
+            "notch": widgets.Checkbox(),
+        }
     return {
         "*": {},
         "relplot": relplot,
@@ -184,6 +211,8 @@ def seaborn_arg_widgets(df):
         "lineplot": lineplot,
         "catplot": catplot,
         "stripplot": stripplot,
+        "swarmplot": swarmplot,
+        "boxplot": boxplot,
     }
 
 
