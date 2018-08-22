@@ -164,12 +164,26 @@ def seaborn_arg_widgets(df):
             "sharey": widgets.Dropdown(options={"True": True, "col": "col", "row": "row"}),
             "margin_titles": widgets.Checkbox(),
         }
+    stripplot = {
+            "x": relplot["x"],
+            "y": relplot["y"],
+            #"order","hue_order"
+            "jitter": widgets.Checkbox(),
+            #"dodge"
+            "orient": catplot["orient"],
+            #"color"
+            "palette": relplot["palette"],
+            "size": widgets.FloatText(value=1.0),
+            #"edgecolor"
+            "linewidth": widgets.FloatText(value=1.0),
+        }
     return {
         "*": {},
         "relplot": relplot,
         "scatterplot": scatterplot,
         "lineplot": lineplot,
         "catplot": catplot,
+        "stripplot": stripplot,
     }
 
 
