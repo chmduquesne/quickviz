@@ -346,6 +346,22 @@ def arg_widgets(df):
             "label": distplot["label"],
             "color": catplot["color"],
         }
+    heatmap = {
+            "vmin": widgets.FloatText(value=1.0),
+            "vmax": widgets.FloatText(value=1.0),
+            "cmap": widgets.Text(value="viridis"),
+            "center": widgets.FloatText(value=1.0),
+            "robust": lmplot["robust"],
+            "annot": widgets.Checkbox(),
+            "fmt": widgets.Text(),
+            "linewidths": widgets.FloatText(value=1.0),
+            "linecolor": widgets.Text(),
+            "cbar": widgets.Checkbox(),
+            "square": widgets.Checkbox(),
+            #xticklabels, yticklabels
+            #"mask"
+        }
+    #clustermap = {}
     return {
         "*": {},
         "relplot": relplot,
@@ -368,6 +384,8 @@ def arg_widgets(df):
         "lmplot": lmplot,
         "regplot": regplot,
         "residplot": residplot,
+        "heatmap": heatmap,
+        #"clustermap": clustermap,
     }
 
 
