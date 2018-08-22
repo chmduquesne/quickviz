@@ -1,10 +1,16 @@
 Quickviz
 ========
 
-Quickviz provides widgets for quickly visualizing pandas dataframes.
+Quickviz provides widgets for quickly visualizing pandas dataframes. It
+interfaces with seaborn and pandas.plot.
 
-What is this?
--------------
+Examples
+--------
+
+See the [gallery](https://nbviewer.jupyter.org/github/chmduquesne/quickviz/tree/master/examples/).
+
+Rationale
+---------
 
 It is often necessary to plot data in order to understand it. Plotting
 allows to quiclky spot glitches in the data: that person who is 180 meters
@@ -13,25 +19,12 @@ immediately stand out. In this situation, one wants a way to quickly
 (rather than beautifully) plot their data. Quickviz provides a set of
 widgets to do this in a few clicks.
 
-How to use it
--------------
-
-    %matplotlib inline
-    from quickviz import visualize as v
-    from vega_datasets import data
-    v(data.iris(), method="seaborn") # or method="pandas"
-
 Installation
 ------------
 
     pip install ipywidgets
     jupyter nbextension enable --py widgetsnbextension
     pip install quickviz
-
-Examples
---------
-
-See the [gallery](https://nbviewer.jupyter.org/github/chmduquesne/quickviz/tree/master/examples/).
 
 Disclaimer
 ----------
