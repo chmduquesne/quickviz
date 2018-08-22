@@ -24,7 +24,8 @@ AUTHOR_EMAIL        = 'chmd@chmd.fr'
 URL                 = 'https://github.com/chmduquesne/quickviz'
 DOWNLOAD_URL        = 'https://github.com/chmduquesne/quickviz'
 LICENSE             = 'MIT'
-INSTALL_REQUIRES    = ['matplotlib', 'pandas', 'jupyter', 'ipywidgets']
+INSTALL_REQUIRES    = ['matplotlib', 'pandas', 'jupyter', 'ipywidgets',
+        'seaborn']
 
 
 def git_tag():

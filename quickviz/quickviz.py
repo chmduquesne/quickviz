@@ -1,5 +1,6 @@
 import matplotlib
 import pandas as pd
+import seaborn
 from IPython.display import display, clear_output
 import ipywidgets as widgets
 from ipywidgets.widgets.interaction import show_inline_matplotlib_plots
@@ -65,6 +66,92 @@ def pandas_arg_widgets(df):
             "column": widgets.SelectMultiple(options=list(df)),
         }
     }
+
+
+def pandas_plot(df, plot_type, kwargs):
+    method = getattr(df.plot, plot_type)
+    method(**kwargs)
+
+
+def seaborn_arg_widgets(df):
+    relplot = {
+            "x": widgets.Dropdown(options=list(df)),
+            "y": widgets.Dropdown(options=list(df)),
+            "hue": widgets.Dropdown(options=list(df)),
+            "size": widgets.Dropdown(options=list(df)),
+            "style": widgets.Dropdown(options=list(df)),
+            "row": widgets.Dropdown(options=list(df)),
+            "col": widgets.Dropdown(options=list(df)),
+            "col_wrap": widgets.IntText(value=10),
+            #"row_order":
+            #"col_order":
+            "palette": widgets.Text(),
+            #"hue_order":
+            #"hue_norm":
+            "sizes": widgets.Dropdown(options=dict([(col, list(df[col])) for col in list(df)])),
+            #"size_order":
+            #"size_norm":
+            "legend": widgets.Dropdown(options={"brief": "brief", "full":"full", "False": False}),
+            "kind": widgets.Dropdown(options=["scatter", "line"]),
+            #"height":
+            #"aspect":
+        }
+    scatterplot = {
+            "x": relplot["x"],
+            "y": relplot["y"],
+            "hue": relplot["hue"],
+            "size": relplot["size"],
+            "style": relplot["style"],
+            "palette": relplot["palette"],
+            #"hue_order":
+            #"hue_norm":
+            "sizes": relplot["sizes"],
+            #"size_order":
+            #"size_norm":
+            "markers": widgets.Dropdown(options=dict([(col, list(df[col])) for col in list(df)])),
+            #"style_order":
+            #"{x,y}_bins": (non functional)
+            #"units": (non functional)
+            #"estimator": (non functional)
+            #"ci": (non functional)
+            #"n_boot": (non functional)
+            "alpha": widgets.FloatSlider(min=0.0, max=1.0, step=0.05),
+            #"{x,y}_jitter": (non functional)
+            "legend": relplot["legend"],
+        }
+    lineplot = {
+            "x": relplot["x"],
+            "y": relplot["y"],
+            "hue": relplot["hue"],
+            "size": relplot["size"],
+            "style": relplot["style"],
+            "palette": relplot["palette"],
+            #"hue_order":
+            #"hue_norm":
+            "sizes": relplot["sizes"],
+            "dashes": widgets.Dropdown(options=dict([(col, list(df[col])) for col in list(df)])),
+            "markers": scatterplot["markers"],
+            #"style_order":
+            #"units": (non functional)
+            #"estimator"
+            #"ci"
+            #"n_boot":
+            "sort": widgets.Checkbox(),
+            "err_style": widgets.Dropdown(options=["band", "bars"]),
+            "legend": relplot["legend"],
+        }
+    return {
+        "*": {},
+        "relplot": relplot,
+        "scatterplot": scatterplot,
+        "lineplot": lineplot,
+    }
+
+
+def seaborn_plot(df, plot_type, kwargs):
+    method = getattr(seaborn, plot_type)
+    kwargs["data"]=df
+    method(**kwargs)
 
 
 class UI(object):
@@ -180,14 +267,17 @@ class UI(object):
                 pass
 
 
-def pandas_plot(df, plot_type, kwargs):
-    method = getattr(df.plot, plot_type)
-    method(**kwargs)
-
-
 def visualize(df):
     return UI(
             df,
             generate_widgets=pandas_arg_widgets,
             plot_function=pandas_plot
+            )
+
+
+def visualize_seaborn(df):
+    return UI(
+            df,
+            generate_widgets=seaborn_arg_widgets,
+            plot_function=seaborn_plot
             )
