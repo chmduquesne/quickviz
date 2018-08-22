@@ -380,6 +380,25 @@ def seaborn_arg_widgets(df):
             "x_jitter": widgets.FloatText(value=1.0),
             "y_jitter": widgets.FloatText(value=1.0),
         }
+    regplot = {
+            "x": relplot["x"],
+            "y": relplot["y"],
+            #x_estimator
+            "x_bins": lmplot["x_bins"],
+            "x_ci": lmplot["x_ci"],
+            "scatter": lmplot["scatter"],
+            "fit_reg": lmplot["fit_reg"],
+            "ci": lmplot["ci"],
+            "n_boot": lineplot["n_boot"],
+            #units
+            "order": lmplot["order"],
+            "logistic": lmplot["logistic"],
+            "lowess": lmplot["lowess"],
+            "robust": lmplot["robust"],
+            "logx": lmplot["logx"],
+            "x_partial": lmplot["x_partial"],
+            "y_partial": lmplot["y_partial"],
+        }
     return {
         "*": {},
         "relplot": relplot,
