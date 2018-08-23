@@ -34,7 +34,7 @@ def arg_widgets(df):
             "palette": relplot["palette"],
             #"hue_order":
             #"hue_norm":
-            "sizes": relplot["sizes"],
+            #"sizes": relplot["sizes"],
             #"size_order":
             #"size_norm":
             #"markers":
