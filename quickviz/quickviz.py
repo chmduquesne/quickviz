@@ -102,6 +102,8 @@ class UI(object):
         self.arg_chooser.options = self.get_accepted_args()
         if arg_choice in dict(self.get_accepted_args()).values():
             self.arg_chooser.value = arg_choice
+        else:
+            self.arg_chooser.value = None
         self.arg_chooser.observe(self.add_arg, 'value')
         self.plot()
 
