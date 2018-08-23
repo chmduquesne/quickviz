@@ -14,8 +14,12 @@ class UI(object):
         self.connected_args = []
         self.connect_widgets()
 
+        self.plot_type_box = widgets.HBox()
         self.plot_type_chooser = widgets.Dropdown(options=self.get_plot_types(), description="Plot")
+        self.auto_update = widgets.Checkbox(description="update")
+        self.plot_type_box.children = [self.plot_type_chooser, self.auto_update]
         self.plot_type_chooser.observe(self.redraw, 'value')
+        self.auto_update.observe(self.redraw, 'value')
 
         self.add_arg_box = widgets.HBox()
         self.arg_chooser = widgets.Dropdown(description="Controls")
@@ -88,7 +92,7 @@ class UI(object):
         lines.append(widgets.HBox([widgets.Label(value="---")]))
         for arg in self.connected_args:
             lines.append(self.arg_controller(arg))
-        lines.append(self.plot_type_chooser)
+        lines.append(self.plot_type_box)
         self.vbox.children = lines
 
         arg_choice = self.arg_chooser.value
@@ -104,6 +108,8 @@ class UI(object):
 
 
     def plot(self, *_):
+        if not self.auto_update.value:
+            return
         kwargs = {
             arg:self.get_widget(arg).value for arg in self.connected_args
         }
