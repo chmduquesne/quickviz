@@ -15,14 +15,14 @@ class UI(object):
         self.connect_widgets()
 
         self.plot_type_box = widgets.HBox()
-        self.plot_type_chooser = widgets.Dropdown(options=self.get_plot_types(), description='Plot')
+        self.plot_type_chooser = widgets.Dropdown(options=self.get_plot_types(), description='Plot type')
         self.auto_update = widgets.Checkbox(description='auto-update')
         self.plot_type_box.children = [self.plot_type_chooser, self.auto_update]
         self.plot_type_chooser.observe(self.redraw, 'value')
         self.auto_update.observe(self.redraw, 'value')
 
         self.add_arg_box = widgets.HBox()
-        self.arg_chooser = widgets.Dropdown(description='Controls')
+        self.arg_chooser = widgets.Dropdown(description='Add arg')
         self.add_arg_box.children = [self.arg_chooser]
 
         self.vbox = widgets.VBox()
@@ -43,8 +43,7 @@ class UI(object):
     def get_accepted_args(self):
         args  = [(a, a) for a in sorted(self.arg_widgets['*'].keys())]
         p = self.plot_type_chooser.value
-        args += [('[%s] %s' % (p, a), a) for a in
-                sorted(self.arg_widgets[p].keys())]
+        args += [(a, a) for a in sorted(self.arg_widgets[p].keys())]
         # place the most useful arguments on top
         top = [('x', 'x'), ('y', 'y')]
         for t in reversed(top):
@@ -88,11 +87,11 @@ class UI(object):
         self.filter_connected_args()
 
         lines = []
-        lines.append(self.add_arg_box)
-        lines.append(widgets.HBox([widgets.Label(value='---')]))
+        lines.append(self.plot_type_box)
         for arg in self.connected_args:
             lines.append(self.arg_controller(arg))
-        lines.append(self.plot_type_box)
+        lines.append(widgets.HBox([widgets.Label(value='---')]))
+        lines.append(self.add_arg_box)
         self.vbox.children = lines
 
         arg_choice = self.arg_chooser.value
@@ -112,7 +111,6 @@ class UI(object):
             arg:self.get_widget(arg).value for arg in self.connected_args
         }
         return (plot_type, kwargs)
-
 
     def plot(self, *_):
         if not self.auto_update.value:
