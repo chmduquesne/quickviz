@@ -15,14 +15,14 @@ class UI(object):
         self.connect_widgets()
 
         self.plot_type_box = widgets.HBox()
-        self.plot_type_chooser = widgets.Dropdown(options=self.get_plot_types(), description="Plot")
-        self.auto_update = widgets.Checkbox(description="update")
+        self.plot_type_chooser = widgets.Dropdown(options=self.get_plot_types(), description='Plot')
+        self.auto_update = widgets.Checkbox(description='auto-update')
         self.plot_type_box.children = [self.plot_type_chooser, self.auto_update]
         self.plot_type_chooser.observe(self.redraw, 'value')
         self.auto_update.observe(self.redraw, 'value')
 
         self.add_arg_box = widgets.HBox()
-        self.arg_chooser = widgets.Dropdown(description="Controls")
+        self.arg_chooser = widgets.Dropdown(description='Controls')
         self.add_arg_box.children = [self.arg_chooser]
 
         self.vbox = widgets.VBox()
@@ -41,7 +41,7 @@ class UI(object):
         return sorted([name for name in list(self.arg_widgets.keys()) if name != '*'])
 
     def get_accepted_args(self):
-        args  = [(a, a) for a in sorted(self.arg_widgets["*"].keys())]
+        args  = [(a, a) for a in sorted(self.arg_widgets['*'].keys())]
         p = self.plot_type_chooser.value
         args += [('[%s] %s' % (p, a), a) for a in
                 sorted(self.arg_widgets[p].keys())]
@@ -59,8 +59,8 @@ class UI(object):
             self.redraw()
 
     def get_widget(self, arg):
-        if arg in self.arg_widgets["*"]:
-            return self.arg_widgets["*"][arg]
+        if arg in self.arg_widgets['*']:
+            return self.arg_widgets['*'][arg]
         else:
             return self.arg_widgets[self.plot_type_chooser.value][arg]
 
@@ -89,7 +89,7 @@ class UI(object):
 
         lines = []
         lines.append(self.add_arg_box)
-        lines.append(widgets.HBox([widgets.Label(value="---")]))
+        lines.append(widgets.HBox([widgets.Label(value='---')]))
         for arg in self.connected_args:
             lines.append(self.arg_controller(arg))
         lines.append(self.plot_type_box)
@@ -141,10 +141,10 @@ def visualize_seaborn(df):
 
 def visualize(df, method='seaborn'):
     if not isinstance(df, pd.core.frame.DataFrame):
-        raise TypeError("The argument must be a pandas dataframes")
-    if method == "pandas":
+        raise TypeError('The argument must be a pandas dataframes')
+    if method == 'pandas':
         return visualize_pandas(df)
-    elif method == "seaborn":
+    elif method == 'seaborn':
         return visualize_seaborn(df)
     else:
-        raise ValueError("unsupported method")
+        raise ValueError('unsupported method')
