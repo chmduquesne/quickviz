@@ -105,6 +105,13 @@ class UI(object):
         self.arg_chooser.observe(self.add_arg, 'value')
         self.plot()
 
+    def get_controller(self, name):
+        for h in self.vbox.children:
+            w = h.children[0]
+            if w.description == name:
+                return w
+        raise KeyError("No controller for name %s" % name)
+
     def get_plot_parameters(self):
         plot_type = self.plot_type_chooser.value
         kwargs = {
