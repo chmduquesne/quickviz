@@ -125,7 +125,7 @@ def arg_widgets(df):
             "orient": catplot["orient"],
             "color": catplot["color"],
             "palette": relplot["palette"],
-            "saturation": widgets.FloatText(value=1.0),
+            "saturation": widgets.FloatSlider(min=0.0, max=1.0, step=0.05, value=1.0),
             "width": widgets.FloatText(value=1.0),
             #"dodge"
             "fliersize": widgets.FloatText(value=1.0),
