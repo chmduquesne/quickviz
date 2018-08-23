@@ -106,19 +106,24 @@ class UI(object):
         self.arg_chooser.observe(self.add_arg, 'value')
         self.plot()
 
+    def get_plot_parameters(self):
+        plot_type = self.plot_type_chooser.value
+        kwargs = {
+            arg:self.get_widget(arg).value for arg in self.connected_args
+        }
+        return (plot_type, kwargs)
+
 
     def plot(self, *_):
         if not self.auto_update.value:
             return
-        kwargs = {
-            arg:self.get_widget(arg).value for arg in self.connected_args
-        }
+        plot_type, kwargs = self.get_plot_parameters()
         show_inline_matplotlib_plots()
         with self.output:
             clear_output(wait=True)
             self.plot_function(
                     self.df,
-                    self.plot_type_chooser.value,
+                    plot_type,
                     kwargs)
             show_inline_matplotlib_plots()
 
