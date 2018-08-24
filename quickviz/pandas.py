@@ -1,6 +1,6 @@
 import ipywidgets as widgets
 
-def arg_widgets(df):
+def gen_widgets(df):
     """
     Returns a dictionary of dictionaries
 

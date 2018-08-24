@@ -7,10 +7,10 @@ from IPython.display import display, clear_output
 
 
 class UI(object):
-    def __init__(self, df, generate_widgets, plot_function):
+    def __init__(self, df, gen_widgets, plot):
         self.df = df
-        self.arg_widgets = generate_widgets(df)
-        self.plot_function = plot_function
+        self.widgets = gen_widgets(df)
+        self.plot = plot
         self.connected_args = []
         self.connect_widgets()
 
@@ -33,15 +33,15 @@ class UI(object):
         self.redraw()
 
     def connect_widgets(self):
-        for w in self.arg_widgets['*'].values():
-            w.observe(self.plot, 'value')
+        for w in self.widgets['*'].values():
+            w.observe(self._plot, 'value')
 
     def get_plot_types(self):
-        return sorted([p for p in self.arg_widgets.keys() if p != '*'])
+        return sorted([p for p in self.widgets.keys() if p != '*'])
 
     def get_accepted_args(self):
         p = self.plot_type_chooser.value
-        args = sorted(self.arg_widgets[p].keys())
+        args = sorted(self.widgets[p].keys())
         # place the most useful arguments on top
         top = ['x', 'y']
         for t in reversed(top):
@@ -57,7 +57,7 @@ class UI(object):
 
     def get_widget(self, arg):
         p = self.plot_type_chooser.value
-        return self.arg_widgets[p][arg]
+        return self.widgets[p][arg]
 
     def arg_controller(self, arg):
         w = self.get_widget(arg)
@@ -102,7 +102,7 @@ class UI(object):
             self.arg_chooser.value = None
         self.arg_chooser.observe(self.add_arg, 'value')
 
-        self.plot()
+        self._plot()
 
     def get_controller(self, name):
         for h in self.vbox.children:
@@ -111,21 +111,21 @@ class UI(object):
                 return w
         raise KeyError("No controller for name %s" % name)
 
-    def get_plot_parameters(self):
-        plot_type = self.plot_type_chooser.value
-        kwargs = {
+    def _kwargs(self):
+        res = {
             arg:self.get_widget(arg).value for arg in self.connected_args
         }
-        return (plot_type, kwargs)
+        return res
 
-    def plot(self, *_):
+    def _plot(self, *_):
         if not self.auto_update.value:
             return
-        plot_type, kwargs = self.get_plot_parameters()
+        kwargs = self._kwargs()
+        plot_type = self.plot_type_chooser.value
         show_inline_matplotlib_plots()
         with self.output:
             clear_output(wait=True)
-            self.plot_function(
+            self.plot(
                     self.df,
                     plot_type,
                     kwargs)
@@ -135,16 +135,16 @@ class UI(object):
 def visualize_pandas(df):
     return UI(
             df,
-            generate_widgets=pandas.arg_widgets,
-            plot_function=pandas.plot
+            gen_widgets=pandas.gen_widgets,
+            plot=pandas.plot
             )
 
 
 def visualize_seaborn(df):
     return UI(
             df,
-            generate_widgets=seaborn.arg_widgets,
-            plot_function=seaborn.plot
+            gen_widgets=seaborn.gen_widgets,
+            plot=seaborn.plot
             )
 
 
