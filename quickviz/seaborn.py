@@ -3,10 +3,15 @@ import seaborn
 
 
 def arg_widgets(df):
-    # Instead of creating a widget for every argument (e.g. "x") of every
-    # plot type, we create it once and we refer to it whenever possible.
-    # This increases the usability since the interface does not forget the
-    # state between updates.
+    """
+    Returns a dictionary of dictionaries
+
+    The dictionary '*' contains all the widgets. The keys don't matter in
+    the UI.
+
+    All other dictionaries are named after the plot they represent. They
+    map their arguments to widgets defined in '*'.
+    """
     w = {
         "a": widgets.Dropdown(options=[(col, list(df[col])) for col in list(df)]),
         "alpha": widgets.FloatSlider(min=0.0, max=1.0, step=0.05),

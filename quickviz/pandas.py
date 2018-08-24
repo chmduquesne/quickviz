@@ -1,6 +1,15 @@
 import ipywidgets as widgets
 
 def arg_widgets(df):
+    """
+    Returns a dictionary of dictionaries
+
+    The dictionary '*' contains all the widgets. The keys don't matter in
+    the UI.
+
+    All other dictionaries are named after the plot they represent. They
+    map their arguments to widgets defined in '*'.
+    """
     w = {
         "C": widgets.Dropdown(options=list(df)),
         "bins": widgets.IntText(value=10),
