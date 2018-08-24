@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/chmduquesne/quickviz.svg?branch=master)](https://travis-ci.org/chmduquesne/quickviz)
+
 Quickviz
 ========
 
