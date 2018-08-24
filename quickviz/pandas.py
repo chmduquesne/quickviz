@@ -31,13 +31,14 @@ def arg_widgets(df):
         "y": widgets.Dropdown(options=list(df)),
         "yerr": widgets.Dropdown(options=dict([(col, list(df[col])) for col in list(df)])),
     }
-    return {
-        "*": {
+    generic_args = {
             k:w[k] for k in [ "x", "y", "subplots", "sharex", "sharey",
                 "use_index", "title", "grid", "legend", "logx", "logy",
                 "fontsize", "colormap", "position", "xerr", "yerr",
                 "stacked", "sort_columns", "mark_right", ]
-        },
+    }
+    res = {
+        "*": w,
         "area": {},
         "bar": {},
         "barh": {},
@@ -75,6 +76,9 @@ def arg_widgets(df):
             "column": w["column"],
         }
     }
+    for plot_type in res:
+        res[plot_type].update(**generic_args)
+    return res
 
 
 def plot(df, plot_type, kwargs):

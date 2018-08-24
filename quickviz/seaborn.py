@@ -466,7 +466,7 @@ def arg_widgets(df):
     }
     #clustermap = {}
     return {
-        "*": {},
+        "*": w,
         "relplot": relplot,
         "scatterplot": scatterplot,
         "lineplot": lineplot,

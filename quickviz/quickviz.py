@@ -33,18 +33,15 @@ class UI(object):
         self.redraw()
 
     def connect_widgets(self):
-        for widget_dict in self.arg_widgets.values():
-            for a, w in widget_dict.items():
-                w.description = a
-                w.observe(self.plot, 'value')
+        for w in self.arg_widgets['*'].values():
+            w.observe(self.plot, 'value')
 
     def get_plot_types(self):
-        return sorted([name for name in list(self.arg_widgets.keys()) if name != '*'])
+        return sorted([p for p in self.arg_widgets.keys() if p != '*'])
 
     def get_accepted_args(self):
-        args  = sorted(self.arg_widgets['*'].keys())
         p = self.plot_type_chooser.value
-        args += sorted(self.arg_widgets[p].keys())
+        args = sorted(self.arg_widgets[p].keys())
         # place the most useful arguments on top
         top = ['x', 'y']
         for t in reversed(top):
@@ -59,13 +56,12 @@ class UI(object):
             self.redraw()
 
     def get_widget(self, arg):
-        if arg in self.arg_widgets['*']:
-            return self.arg_widgets['*'][arg]
-        else:
-            return self.arg_widgets[self.plot_type_chooser.value][arg]
+        p = self.plot_type_chooser.value
+        return self.arg_widgets[p][arg]
 
     def arg_controller(self, arg):
         w = self.get_widget(arg)
+        w.description = arg
         r = widgets.Button(description='remove')
         h = widgets.HBox(children=[w, r])
         def remove(*_):
