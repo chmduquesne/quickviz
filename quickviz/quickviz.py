@@ -104,6 +104,28 @@ class UI(object):
 
         self._plot()
 
+    def save(self):
+        return {
+            'plot': self.plot_type_chooser.value,
+            'kwargs': self._kwargs(),
+        }
+
+    def load(self, d):
+        for k in d.keys():
+            if k not in ['plot', 'kwargs']:
+                raise ValueError('%s: unexpected key')
+        plot = d['plot']
+        if plot not in self.get_plot_types():
+            raise ValueError('%s: not an acceptable plot type' % plot)
+        self.plot_type_chooser.value = plot
+        for arg in d['kwargs'].keys():
+            if arg not in self.get_accepted_args():
+                raise ValueError('%s: not an acceptable arg' % arg)
+        self.connected_args = list(d['kwargs'].keys())
+        self.redraw()
+        for arg, value in d['kwargs'].items():
+            self.get_controller(arg).value = value
+
     def get_controller(self, name):
         for h in self.vbox.children:
             w = h.children[0]
@@ -112,10 +134,9 @@ class UI(object):
         raise KeyError("No controller for name %s" % name)
 
     def _kwargs(self):
-        res = {
+        return {
             arg:self.get_widget(arg).value for arg in self.connected_args
         }
-        return res
 
     def _plot(self, *_):
         if not self.auto_update.value:
