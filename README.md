@@ -13,6 +13,18 @@ See the
 [gallery](https://nbviewer.jupyter.org/github/chmduquesne/quickviz/tree/master/quickviz/tests/seaborn/)
 (which is also a test suite).
 
+Usage
+-----
+
+There only one function, visualize. Apply it to your dataframe, and start
+playing.
+
+    from quickviz import visualize as v
+    from vega_datasets import data
+
+    df = data.cars()
+    v(df)
+
 Rationale
 ---------
 
