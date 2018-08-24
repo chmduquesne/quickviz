@@ -7,7 +7,9 @@ interfaces with seaborn and pandas.plot.
 Examples
 --------
 
-See the [gallery](https://nbviewer.jupyter.org/github/chmduquesne/quickviz/tree/master/examples/).
+See the
+[gallery](https://nbviewer.jupyter.org/github/chmduquesne/quickviz/tree/master/quickviz/tests/seaborn/)
+(which is also a test suite).
 
 Rationale
 ---------
