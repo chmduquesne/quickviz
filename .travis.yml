@@ -8,7 +8,7 @@ before_install:
 install:
 - python setup.py install
 script:
-- python -m pytest quickviz --doctest-modules
+- py.test -v
 deploy:
   provider: pypi
   user: chm.duquesne
