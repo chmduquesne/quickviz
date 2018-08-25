@@ -128,6 +128,7 @@ class UI(object):
         self.redraw()
         for arg, value in d['kwargs'].items():
             self.get_controller(arg).value = value
+        self.auto_update.value = True
 
     def get_controller(self, name):
         for h in self.vbox.children:
