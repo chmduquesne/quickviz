@@ -8,8 +8,6 @@ before_install:
 install:
 - python setup.py install
 script:
-- pytest --version
-- pytest --collect-only
 - pytest
 deploy:
   provider: pypi
