@@ -92,4 +92,4 @@ def gen_widgets(df):
 
 def plot(df, plot_type, kwargs):
     method = getattr(df.plot, plot_type)
-    method(**kwargs)
+    return method(**kwargs)

@@ -501,4 +501,4 @@ def plot(df, plot_type, kwargs):
     method = getattr(seaborn, plot_type)
     if plot_type not in ["distplot", "kdeplot"]:
         kwargs["data"]=df
-    method(**kwargs)
+    return method(**kwargs)

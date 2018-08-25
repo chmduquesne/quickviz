@@ -1,3 +1,4 @@
+import matplotlib
 import pandas as pd
 import ipywidgets as widgets
 from . import pandas
@@ -9,8 +10,10 @@ from IPython.display import display, clear_output
 class UI(object):
     def __init__(self, df, gen_widgets, plot):
         self.df = df
+        self.manual_kwargs = {}
         self.widgets = gen_widgets(df)
         self.plot = plot
+        self._plot_object = None
         self.connected_args = []
         self.connect_widgets()
 
@@ -142,11 +145,12 @@ class UI(object):
         if not self.auto_update.value:
             return
         kwargs = self._kwargs()
+        kwargs.update(**self.manual_kwargs)
         plot_type = self.plot_type_chooser.value
         show_inline_matplotlib_plots()
         with self.output:
             clear_output(wait=True)
-            self.plot(
+            self._plot_object = self.plot(
                     self.df,
                     plot_type,
                     kwargs)
