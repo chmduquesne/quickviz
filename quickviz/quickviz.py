@@ -3,7 +3,6 @@ import pandas as pd
 import ipywidgets as widgets
 from . import pandas
 from . import seaborn
-from ipywidgets.widgets.interaction import show_inline_matplotlib_plots
 from IPython.display import display, clear_output
 
 
@@ -13,7 +12,6 @@ class UI(object):
         self.manual_kwargs = {}
         self.widgets = gen_widgets(df)
         self.plot = plot
-        self._plot_object = None
         self.connected_args = []
         self.connect_widgets()
 
@@ -36,13 +34,22 @@ class UI(object):
         self.redraw()
 
     def connect_widgets(self):
+        """
+        Make sure that a change to any of the widgets triggers a replot
+        """
         for w in self.widgets['*'].values():
-            w.observe(self._plot, 'value')
+            w.observe(self.display_plot, 'value')
 
     def get_plot_types(self):
+        """
+        All the plot types
+        """
         return sorted([p for p in self.widgets.keys() if p != '*'])
 
     def get_accepted_args(self):
+        """
+        Arguments that are accepted by the currently selected plot type
+        """
         p = self.plot_type_chooser.value
         args = sorted(self.widgets[p].keys())
         # place the most useful arguments on top
@@ -54,15 +61,29 @@ class UI(object):
         return args
 
     def add_arg(self, *_):
+        """
+        Add the argument selected by the user in the plot arguments
+        """
         if self.arg_chooser.value not in self.connected_args:
             self.connected_args.append(self.arg_chooser.value)
             self.redraw()
 
     def get_widget(self, arg):
+        """
+        Return the widget associated with the argument. Which widget is
+        returned for a given argument name depends on the selected plot
+        type.
+        """
         p = self.plot_type_chooser.value
         return self.widgets[p][arg]
 
-    def arg_controller(self, arg):
+    def gen_arg_line(self, arg):
+        """
+        Create a line, ready to be inserted, containing the widget
+        associated with  the argument, as well as a remove button. The
+        remove button should not only remove the line, but also remove the
+        argument from the connected arguments.
+        """
         w = self.get_widget(arg)
         w.description = arg
         r = widgets.Button(description='remove')
@@ -78,18 +99,83 @@ class UI(object):
         return h
 
     def filter_connected_args(self):
+        """
+        Remove from the connected arguments any argument that is
+        irrelevant for the current plot type
+        """
         self.connected_args = [
             a for a in self.connected_args[:]
             if a in self.get_accepted_args()
         ]
 
+    def save(self):
+        """
+        Save the UI state in a dictionary
+        """
+        return {
+            'plot': self.plot_type_chooser.value,
+            'kwargs': self.kwargs(),
+        }
+
+    def load(self, d):
+        """
+        Load a dictionary into the UI state
+        """
+        for k in d.keys():
+            if k not in ['plot', 'kwargs']:
+                raise ValueError('%s: unexpected key')
+        plot = d['plot']
+        if plot not in self.get_plot_types():
+            raise ValueError('%s: not an acceptable plot type' % plot)
+        self.plot_type_chooser.value = plot
+        for arg in d['kwargs'].keys():
+            if arg not in self.get_accepted_args():
+                raise ValueError('%s: not an acceptable arg' % arg)
+        self.connected_args = list(d['kwargs'].keys())
+        self.redraw()
+        for arg, value in d['kwargs'].items():
+            self.get_widget(arg).value = value
+        self.auto_update.value = True
+
+    def kwargs(self):
+        """
+        Return a kwarg dictionary associated with the current UI state
+        """
+        return {
+            arg:self.get_widget(arg).value for arg in self.connected_args
+        }
+
+    def gen_plot(self):
+        """
+        Return the plot object associated with the UI state
+        """
+        kwargs = self.kwargs()
+        kwargs.update(**self.manual_kwargs)
+        plot_type = self.plot_type_chooser.value
+        return self.plot(self.df, plot_type, kwargs)
+
+    def display_plot(self, *_):
+        """
+        Display the plot object associated with the UI state, unless the
+        user does not want interactive updates
+        """
+        if not self.auto_update.value:
+            return
+        with self.output:
+            clear_output(wait=True)
+            self.gen_plot()
+
     def redraw(self, *_):
+        """
+        Redraw all the UI buttons so that they match the internally
+        selected args, then display the plot
+        """
         self.filter_connected_args()
 
         lines = []
         lines.append(self.plot_type_box)
         for arg in self.connected_args:
-            lines.append(self.arg_controller(arg))
+            lines.append(self.gen_arg_line(arg))
         lines.append(widgets.HBox([widgets.Label(value='---')]))
         lines.append(self.add_arg_box)
         self.vbox.children = lines
@@ -105,57 +191,7 @@ class UI(object):
             self.arg_chooser.value = None
         self.arg_chooser.observe(self.add_arg, 'value')
 
-        self._plot()
-
-    def save(self):
-        return {
-            'plot': self.plot_type_chooser.value,
-            'kwargs': self._kwargs(),
-        }
-
-    def load(self, d):
-        for k in d.keys():
-            if k not in ['plot', 'kwargs']:
-                raise ValueError('%s: unexpected key')
-        plot = d['plot']
-        if plot not in self.get_plot_types():
-            raise ValueError('%s: not an acceptable plot type' % plot)
-        self.plot_type_chooser.value = plot
-        for arg in d['kwargs'].keys():
-            if arg not in self.get_accepted_args():
-                raise ValueError('%s: not an acceptable arg' % arg)
-        self.connected_args = list(d['kwargs'].keys())
-        self.redraw()
-        for arg, value in d['kwargs'].items():
-            self.get_controller(arg).value = value
-        self.auto_update.value = True
-
-    def get_controller(self, name):
-        for h in self.vbox.children:
-            w = h.children[0]
-            if w.description == name:
-                return w
-        raise KeyError("No controller for name %s" % name)
-
-    def _kwargs(self):
-        return {
-            arg:self.get_widget(arg).value for arg in self.connected_args
-        }
-
-    def _plot(self, *_):
-        if not self.auto_update.value:
-            return
-        kwargs = self._kwargs()
-        kwargs.update(**self.manual_kwargs)
-        plot_type = self.plot_type_chooser.value
-        show_inline_matplotlib_plots()
-        with self.output:
-            clear_output(wait=True)
-            self._plot_object = self.plot(
-                    self.df,
-                    plot_type,
-                    kwargs)
-            show_inline_matplotlib_plots()
+        self.display_plot()
 
 
 def visualize_pandas(df):
