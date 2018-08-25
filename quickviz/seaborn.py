@@ -16,7 +16,7 @@ def gen_widgets(df):
         "a": widgets.Dropdown(options=[(col, list(df[col])) for col in list(df)]),
         "alpha": widgets.FloatSlider(min=0.0, max=1.0, step=0.05),
         "annot": widgets.Checkbox(),
-        "aspect": widgets.FloatText(value=1),
+        "aspect": widgets.FloatText(value=1, step=0.05),
         "axlabel": widgets.Text(),
         "bins": widgets.IntText(value=10),
         "bw": widgets.Dropdown(options=["scott", "silverman"]),
