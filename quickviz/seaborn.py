@@ -73,7 +73,7 @@ def gen_widgets(df):
         "order_regression": widgets.IntText(value=1),
         "orient": widgets.Dropdown(options=["v", "h"]),
         "outlier_prop": widgets.FloatSlider(min=0.0, max=1.0, step=0.001, value=0.007),
-        "palette": widgets.Text(),
+        "palette": widgets.Text(value='viridis'),
         "ratio": widgets.IntText(value=5),
         "robust": widgets.Checkbox(),
         "row": widgets.Dropdown(options=list(df)),
