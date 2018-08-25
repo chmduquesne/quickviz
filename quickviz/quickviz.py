@@ -4,6 +4,7 @@ import ipywidgets as widgets
 from . import pandas
 from . import seaborn
 from IPython.display import display, clear_output
+from ipywidgets.widgets.interaction import show_inline_matplotlib_plots
 
 
 class UI(object):
@@ -161,9 +162,11 @@ class UI(object):
         """
         if not self.auto_update.value:
             return
+        show_inline_matplotlib_plots()
         with self.output:
             clear_output(wait=True)
             self.gen_plot()
+            show_inline_matplotlib_plots()
 
     def redraw(self, *_):
         """
