@@ -6,12 +6,14 @@ Quickviz
 Quickviz provides widgets for quickly visualizing pandas dataframes. It
 interfaces with seaborn and pandas.plot.
 
-Examples
---------
+Example
+-------
+
+![View of the interface](examples/ui.png)
 
 See the
 [gallery](https://nbviewer.jupyter.org/github/chmduquesne/quickviz/tree/master/quickviz/tests/seaborn/)
-(which is also a test suite).
+(which is also a test suite) for more.
 
 Usage
 -----
