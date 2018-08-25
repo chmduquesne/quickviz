@@ -193,6 +193,25 @@ class UI(object):
 
         self.display_plot()
 
+    def __add__(self, other):
+        """
+        Overlays self and other. Probably buggy.
+        """
+        if not isinstance(other, UI):
+            raise TypeError("wrong type for %s" % str(other))
+        p = self.gen_plot()
+        if not isinstance(p, matplotlib.axes.Axes):
+            p = p.ax
+        restore = ("ax" in other.manual_kwargs)
+        old_ax = other.manual_kwargs.get("ax")
+        other.manual_kwargs["ax"] = p
+        other.gen_plot()
+        if restore:
+            other.manual_kwargs["ax"] = old_ax
+        else:
+            del other.manual_kwargs["ax"]
+        return other
+
 
 def visualize_pandas(df):
     return UI(
