@@ -1,6 +1,7 @@
-ipython
 matplotlib
 pandas
 jupyter
 ipywidgets
 seaborn
+vega_datasets
+pytest-ipynb
