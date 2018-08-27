@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/chmduquesne/quickviz.svg?branch=master)](https://travis-ci.org/chmduquesne/quickviz)
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/chmduquesne/quickviz/master)
 
 Quickviz
 ========
@@ -26,6 +27,8 @@ playing.
 
     df = data.cars()
     v(df)
+
+[Try it live!](https://mybinder.org/v2/gh/chmduquesne/quickviz/master?filepath=examples/Tutorial.ipynb)
 
 Rationale
 ---------
