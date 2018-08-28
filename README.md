@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/chmduquesne/quickviz.svg?branch=master)](https://travis-ci.org/chmduquesne/quickviz)
-[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/chmduquesne/quickviz/master)
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/chmduquesne/quickviz/master?filepath=examples/Tutorial.ipynb)
 
 Quickviz
 ========
